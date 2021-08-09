@@ -1,6 +1,7 @@
 'use strict';
 // ------------------------------------------------------GLOBAL VARIABLES
 const formElem = document.getElementById('terrainSelect');
+const randomButtonElem = document.getElementById('randomFive');
 
 const tilePool = [];
 const tokenPool = [];
@@ -25,6 +26,8 @@ function Token(tokenName, tokenImg){
 }
 
 
+
+
 // ------------------------------------------------------CONSTRUCTOR METHODS
 
 
@@ -32,9 +35,6 @@ function Token(tokenName, tokenImg){
 
 
 // ------------------------------------------------------GLOBAL FUNCTIONS
-
-
-
 function newElement(tagname, parent, text){
   const element = document.createElement(tagname);
   parent.appendChild(element);
@@ -43,6 +43,7 @@ function newElement(tagname, parent, text){
   }
   return element;
 }
+//for creating and appending elements to HTML in JavaScript
 
 function createForm(){
   for (let i=0; i<terrainArray.length; i++){
@@ -58,9 +59,9 @@ function createForm(){
   buttonElem.id = 'submitButton';
   buttonElem.disabled = true;
 }
+//Generates the form for selecting terrain types.
 
-
-function checkboxlimit(checkgroup, limit){
+function checkboxLimit(checkgroup, limit){
   for (let i=0; i<checkgroup.length; i++){
     checkgroup[i].addEventListener('click',function(){
       let checkedCount=0;
@@ -78,6 +79,12 @@ function checkboxlimit(checkgroup, limit){
     });
   }
 }
+//controls the number of selections on the form by enabling and disabling the submit button.
+
+function pickRandomNumber(array){
+  return Math.floor(Math.random() * (array.length));
+}
+//grabs a random index number for the inputted array
 
 
 
@@ -109,14 +116,38 @@ function handleSubmit(e){
   console.log(tilePool);
   console.log(tokenPool);
 }
+//pushes tiles to the array by checking which boxes have been checked.  Also pushes all the standard tokens.
+
+function handleRandom(e){
+  console.log(e);
+  let checkBoxes = document.forms.terrainSelect.terrainTypes;
+  for (let i=0; i<terrainArray.length; i++){
+    checkBoxes[i].checked = false;
+  }
+  for(let i=0; i<5; i++){
+    let randomNumber = checkBoxes[pickRandomNumber(terrainArray)];
+    while(randomNumber.checked){
+      randomNumber = checkBoxes[pickRandomNumber(terrainArray)];
+    }
+    while(!randomNumber.checked){
+      randomNumber.checked = true;
+    }
+  }
+  let button = document.getElementById('submitButton');
+  button.disabled = false;
+}
+//always picks 5 unique boxes to check and sets the submit button to enabled.
+
 
 
 
 // ------------------------------------------------------LISTENERS
 formElem.addEventListener('submit', handleSubmit);
+randomButtonElem.addEventListener('click', handleRandom);
+
 
 
 
 // ------------------------------------------------------CALL FUNCTIONS
 createForm();
-checkboxlimit(document.forms.terrainSelect.terrainTypes, 4);
+checkboxLimit(document.forms.terrainSelect.terrainTypes, 5);

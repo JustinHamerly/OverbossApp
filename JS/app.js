@@ -62,9 +62,9 @@ const terrainTypes = [
     tokenImg: './img/Tokens/CampToken.png',
     crystalImg: './img/Crystals/CampCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'Orc Camps are intimidating projections of your power, but remember that orcs will never tolerate a rival claim to their tribal systems.',
+      points: 'Players receive a total number of points based ont he number of unique Camp tiles they have on their map (see table).  Caps are distinguished by the colored flag int heir upper right corner.',
+      table: '# of unique Camps / total points: 1/1, 2/4, 3/9, 4+/16'
     },
     variants: []
   },
@@ -75,9 +75,8 @@ const terrainTypes = [
     tokenImg: './img/Tokens/CastleToken.png',
     crystalImg: './img/Crystals/CastleCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'Castles can be found throughout Arcadia, remnants of a more civilized time.  Now their power comes fromt he vampires who have taken up residence there.',
+      points: 'Every Castle is worth 2 base points plus another 2 points if it has a vampire on it, for a maximum of 4 points.  This is in addition to the 1 point the vampire would earn for being on its matching type (Castle).'
     },
     variants: []
   },
@@ -88,9 +87,8 @@ const terrainTypes = [
     tokenImg: './img/Tokens/CloudIslandToken.png',
     crystalImg: './img/Crystals/CloudIslandCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'Cloud Islands float high int he sky, their harpy denizens looking down disdainfully ont he world below.',
+      points: 'Each Cloud Island is worth 7 points minus 1 point for every non-Cloud Island tile TYPE on your map (including Dungeons).  For example, if you have four non-Cloud Island terrain types on your map, each Cloud Island is worth 3 points.'
     },
     variants: []
   },
@@ -101,9 +99,9 @@ const terrainTypes = [
     tokenImg: './img/Tokens/DesertToken.png',
     crystalImg: './img/Crystals/DesertCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'Deserts are harsh, unending landscapes from which there is often no escape, especially if you are overtaken by a native sandowrm.',
+      points: 'Deserts are scored based on the size of each CONNECTED group of Desert tiles (see table).  Connected tiles must share a border.',
+      table: 'Size of Desert group / total points: 1 tile/0, 2 tiles/2, 3 tiles/6, 4 tiles/ 12, 5+ tiles/20'
     },
     variants: []
   },
@@ -114,9 +112,8 @@ const terrainTypes = [
     tokenImg: './img/Tokens/SummoningCircleToken.png',
     crystalImg: './img/Crystals/SummoningCircleCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'The origin of Arcadia\'s Summoning Circles is shrouded in mystery.  But it\'s clear that a Boss who learns to weild their arcane powers can control the powerul sorcerobes who live there.',
+      points: 'Each Summoning Circle is worth 1 point.  when you place a Summoning Circle on your map, you may immedately (on that same turn) exchange either a token placed on top of it, or a token bordering it, with one from the market.'
     },
     variants: []
   },
@@ -127,9 +124,8 @@ const terrainTypes = [
     tokenImg: './img/Tokens/VolcanoToken.png',
     crystalImg: './img/Crystals/VolcanoCrystal.png',
     tileDesc: {
-      text: '',
-      points: '',
-      table: '',
+      text: 'Arcadia is a tumultuous, ever-changing land, and there s no greater reminder of this than the powerful Volcanoes that can emerge sudeenly and violently, driven by the elementals that call them home.',
+      points: 'Volcanoes are each worth 4 points.  After placing a Volcano on your map, destroy all bordering Monsters and Minibosses, returning those tokens to the bag.'
     },
     variants: []
   },
@@ -154,6 +150,22 @@ const dungeon = {
   tileDesc: {
     text: 'Dungeons lay at the center of deadly terrain, an enticement for the intrepid adventurer',
     points: 'Each Dungeon is worth 1 base point.  Each Dungeon also gains a point for every different type of terrain that borders it.  If all four sides of a Dungeon are bordered by different types of terrain type, that Dungeon gains its maximum value of 5 points.  Tokens may NOT be placed on Dungeons.'
+  }
+}
+
+const miniboss = {
+  type: 'Miniboss',
+  tokenImg: './img/Tokens/MinibossToken.png',
+  tokenDesc: {
+    points: 'Miniboses are worth 2 points if they are placed on a terrain tile.  Thye may be placed on any terrain tile (except Dungeons) and do NOT count toward bands of Monsters.  Minibosses do not have a terrain icon.'
+  }
+}
+
+const portal = {
+  type: 'Portal',
+  tokenImg: './img/Tokens/PortalToken.png',
+  tokenDesc: {
+    points: 'Portals are not worth any points.  They are placed in your lair active-side up (the glowing side). Once per turn, you may use a single active Portal (flip it over) to change the positions of up to two Monsters or Minibosses on your map.  To use a Portal, pick up either 1 or 2 tokens on your map, then immediately place those same tokens on any currently open tile on your map.  You may reposition tokens in the following ways:  Move 1 token to an open terrain tile, Move 2 tokens to open terrain tiles, Move 1 token to an open terrain tile, then move 1 other token to where the first token used to be, Swap the positions of 2 tokens.'
   }
 }
 
@@ -292,10 +304,10 @@ async function handleSubmit(e){
     tilePool.push(new Tile(dungeon.type, dungeon.tileImg, dungeon.tileDesc));
   }
   for (let i=0; i<7; i++){
-    tokenPool.push(new Token('Portal', './img/Tokens/PortalToken.png'));
+    tokenPool.push(new Token(portal.type, portal.tokenImg, portal.tokenDesc));
   }
   for (let i=0; i<6; i++){
-    tokenPool.push(new Token('Miniboss', './img/Tokens/MinibossToken.png'));
+    tokenPool.push(new Token(miniboss.type, miniboss.tokenImg, miniboss.tokenDesc));
   }
   await shuffle(tilePool);
   await shuffle(tokenPool);

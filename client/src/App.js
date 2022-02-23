@@ -2,28 +2,28 @@ import React from 'react';
 import { Container, AppBar, Typography } from '@material-ui/core';
 import Form from './components/NewGameForm/NewGameForm.js';
 
-const App = () => {
 
-  const terrainTypes = require('./data/terrainTypes.json');
-  console.log(terrainTypes);
+const terrainTypes = require('./data/terrainTypes.json');
 
-  function createForm() {
+class App extends React.Component {
+
+  createForm() {
     const formElem = document.getElementById('terrainSelect');
     for (let i=0; i<terrainTypes.length; i++){
-      let inputElem = newElement('input', formElem, null);
+      let inputElem = this.newElement('input', formElem, null);
       inputElem.type = 'checkbox';
       inputElem.id = terrainTypes[i].type;
       inputElem.name = 'terrainTypes';
       inputElem.value = i;
-      let labelElem = newElement('label', formElem, terrainTypes[i].type);
+      let labelElem = this.newElement('label', formElem, terrainTypes[i].type);
       labelElem.for = terrainTypes[i].type;
     }
-    let buttonElem = newElement('button', formElem, 'SHUFFLE TILES');
+    let buttonElem = this.newElement('button', formElem, 'SHUFFLE TILES');
     buttonElem.id = 'submitButton';
     buttonElem.disabled = true;
   }
 
-  function newElement(tagname, parent, text){
+  newElement(tagname, parent, text){
     const element = document.createElement(tagname);
     parent.appendChild(element);
     if (text){
@@ -32,16 +32,18 @@ const App = () => {
     return element;
   }
 
-  return (
-    <>
-      <Container maxwidth="lg">
-        <AppBar position="static" color="inherit">
-          <Typography variant="h2" align="center">Overboss Companion</Typography>
-        </AppBar>
-      </Container>
-      <Form />
-    </>
-  );
+  render(){
+    return (
+      <>
+        <Container maxwidth="lg">
+          <AppBar position="static" color="inherit">
+            <Typography variant="h2" align="center">Overboss Companion</Typography>
+          </AppBar>
+        </Container>
+        <Form createForm={this.createForm} />
+      </>
+    );
+  }
 }
 
 export default App;

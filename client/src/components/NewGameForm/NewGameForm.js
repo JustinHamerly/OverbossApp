@@ -1,38 +1,38 @@
 import React, { Fragment } from 'react';
+import { Button } from '@material-ui/core';
 
 const terrainTypes = require('../../data/terrainTypes.json');
 
-class Form extends React.Component {
+function Form() {
 
-  pickRandomNumber(array){
+  const pickRandomNumber = (array) => {
     return Math.floor(Math.random() * (array.length));
   }
 
-  handleRandom(e){
+  const handleRandom = (e) => {
     let checkBoxes = document.forms.terrainSelect.terrainTypes;
+    console.log(checkBoxes);
     for (let i=0; i<terrainTypes.length; i++){
       checkBoxes[i].checked = false;
     }
+
     for(let i=0; i<5; i++){
-      let randomNumber = checkBoxes[this.pickRandomNumber(terrainTypes)];
+      let randomNumber = checkBoxes[pickRandomNumber(terrainTypes)];
       while(randomNumber.checked){
-        randomNumber = checkBoxes[this.pickRandomNumber(terrainTypes)];
+        randomNumber = checkBoxes[pickRandomNumber(terrainTypes)];
       }
       while(!randomNumber.checked){
         randomNumber.checked = true;
       }
     }
-    let button = document.getElementById('submitButton');
-    button.disabled = false;
   }
 
-  render() {
-    return (
+  return(
+    <Fragment>
+      <Button id='randomFive' onClick={() => handleRandom()}>PICK RANDOM FIVE TERRAIN</Button>
       <form id="terrainSelect">
-        <button id='randomFive'>PICK RANDOM FIVE TERRAIN</button>
         {
           terrainTypes.map(type => {
-            console.log(type);
             return(
               <Fragment key={type.type}>
                 <label htmlFor={type.type}>{type.type}</label>
@@ -44,10 +44,11 @@ class Form extends React.Component {
         }
             
         <button id="createGameButton" disabled={true} title="Create Game Button">CREATE GAME</button>
-      
       </form>
-    )
-  }
+    </Fragment>
+  )
+  
 }
+
 
 export default Form;

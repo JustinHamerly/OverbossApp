@@ -1,9 +1,22 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
 
 const terrainTypes = require('../../data/terrainTypes.json');
 
 function Form() {
+
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  let [checkedCount, updateCheckedCount] = useState(0);
+  console.log(checkedCount);
+
+  useEffect(() => {
+    if(checkedCount === 5){
+      setButtonDisabled(false);
+    }else{
+      setButtonDisabled(true);
+    }
+  }, [checkedCount]);
 
   const pickRandomNumber = (array) => {
     return Math.floor(Math.random() * (array.length));
@@ -11,9 +24,9 @@ function Form() {
 
   const handleRandom = (e) => {
     let checkBoxes = document.forms.terrainSelect.terrainTypes;
-    console.log(checkBoxes);
     for (let i=0; i<terrainTypes.length; i++){
       checkBoxes[i].checked = false;
+      updateCheckedCount(0);
     }
 
     for(let i=0; i<5; i++){
@@ -23,7 +36,16 @@ function Form() {
       }
       while(!randomNumber.checked){
         randomNumber.checked = true;
+        updateCheckedCount(5);
       }
+    }
+  }
+
+  const handleCheckbox = (e) => {
+    if(e.target.checked === true){
+      updateCheckedCount(checkedCount+1);
+    }else{
+      updateCheckedCount(checkedCount-1);
     }
   }
 
@@ -36,14 +58,14 @@ function Form() {
             return(
               <Fragment key={type.type}>
                 <label htmlFor={type.type}>{type.type}</label>
-                <input type="checkbox" id={type.type} name="terrainTypes" value={type.type}>
+                <input type="checkbox" id={type.type} name="terrainTypes" value={type.type} onClick={(e) => handleCheckbox(e)}>
                 </input>
               </Fragment>
             )
           })
         }
             
-        <button id="createGameButton" disabled={true} title="Create Game Button">CREATE GAME</button>
+        <Button id="createGameButton" disabled={buttonDisabled} title="Create Game Button">CREATE GAME</Button>
       </form>
     </Fragment>
   )

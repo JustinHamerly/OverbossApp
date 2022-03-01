@@ -1,14 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Paper } from '@material-ui/core';
 
-const terrainTypes = require('../../data/terrainTypes.json');
+const terrainTypes = require('../../data/terrainTypes').default;
+const terrainKeys = Array.from(terrainTypes.keys());
 
 function Form() {
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  let [checkedCount, updateCheckedCount] = useState(0);
-  console.log(checkedCount);
+  const [checkedCount, updateCheckedCount] = useState(0);
+  const [selectedTerrain, setSelectedTerrain] = useState([]);
+  const [playerCount, setPlayerCount] = useState(2);
 
   useEffect(() => {
     if(checkedCount === 5){
@@ -24,53 +25,79 @@ function Form() {
 
   const handleRandom = (e) => {
     let checkBoxes = document.forms.terrainSelect.terrainTypes;
-    for (let i=0; i<terrainTypes.length; i++){
+    console.log(checkBoxes)
+    for (let i=0; i<terrainKeys.length; i++){
       checkBoxes[i].checked = false;
       updateCheckedCount(0);
     }
 
+    let selectedTypes = [];
+
     for(let i=0; i<5; i++){
-      let randomNumber = checkBoxes[pickRandomNumber(terrainTypes)];
-      while(randomNumber.checked){
-        randomNumber = checkBoxes[pickRandomNumber(terrainTypes)];
+      let randomKey = checkBoxes[pickRandomNumber(terrainKeys)];
+      while(randomKey.checked){
+        randomKey = checkBoxes[pickRandomNumber(terrainKeys)];
       }
-      while(!randomNumber.checked){
-        randomNumber.checked = true;
-        updateCheckedCount(5);
+      while(!randomKey.checked){
+        randomKey.checked = true;
+        selectedTypes.push(randomKey.value);
       }
     }
+    
+    setSelectedTerrain(selectedTypes);
+    updateCheckedCount(5);
   }
 
   const handleCheckbox = (e) => {
     if(e.target.checked === true){
       updateCheckedCount(checkedCount+1);
+      setSelectedTerrain(selectedTerrain => [...selectedTerrain, e.target.value]);
     }else{
       updateCheckedCount(checkedCount-1);
+      setSelectedTerrain(selectedTerrain => selectedTerrain.filter(item => item !== e.target.value));
     }
   }
 
+  const handlePlayerCount = (e) => {
+    setPlayerCount(parseInt(e.target.value));
+  }
+
+  const handleNewGame = () => {
+    console.log({
+      terrainKeys: selectedTerrain, 
+      players: playerCount
+    });
+  }
+
   return(
-    <Fragment>
+    <Paper>
       <Button id='randomFive' onClick={() => handleRandom()}>PICK RANDOM FIVE TERRAIN</Button>
-      <form id="terrainSelect">
+      <form id="terrainSelect" autoComplete="off" noValidate>
         {
-          terrainTypes.map(type => {
+          terrainKeys.map(key => {
             return(
-              <Fragment key={type.type}>
-                <label htmlFor={type.type}>{type.type}</label>
-                <input type="checkbox" id={type.type} name="terrainTypes" value={type.type} onClick={(e) => handleCheckbox(e)}>
-                </input>
+              <Fragment key={key}>
+                <label htmlFor={key}>{key}</label>
+                <input type="checkbox" id={key} name="terrainTypes" value={key} onClick={(e) => handleCheckbox(e)}/>
               </Fragment>
             )
           })
         }
-            
-        <Button id="createGameButton" disabled={buttonDisabled} title="Create Game Button">CREATE GAME</Button>
+        <Fragment key="players">
+          <label htmlFor="playerCount">Player Count:</label>
+          <select defaultValue="2" className="playerCount" onChange={(e) => handlePlayerCount(e)}>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </Fragment>
+        <Button id="createGameButton" disabled={buttonDisabled} title="Create Game Button" onClick={handleNewGame}>CREATE GAME</Button>
       </form>
-    </Fragment>
+    </Paper>
   )
   
 }
-
 
 export default Form;

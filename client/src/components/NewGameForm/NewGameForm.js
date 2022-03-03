@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Button, Paper } from '@material-ui/core';
 
-const terrainTypes = require('../../data/terrainTypes').default;
-const terrainKeys = Array.from(terrainTypes.keys());
+const terrainTypes = require('../../data/terrainTypes');
+const terrainKeys = Array.from(terrainTypes.default.keys());
 
 function Form() {
 
@@ -10,6 +10,7 @@ function Form() {
   const [checkedCount, updateCheckedCount] = useState(0);
   const [selectedTerrain, setSelectedTerrain] = useState([]);
   const [playerCount, setPlayerCount] = useState(2);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     if(checkedCount === 5){
@@ -25,7 +26,6 @@ function Form() {
 
   const handleRandom = (e) => {
     let checkBoxes = document.forms.terrainSelect.terrainTypes;
-    console.log(checkBoxes)
     for (let i=0; i<terrainKeys.length; i++){
       checkBoxes[i].checked = false;
       updateCheckedCount(0);
@@ -57,18 +57,25 @@ function Form() {
       setSelectedTerrain(selectedTerrain => selectedTerrain.filter(item => item !== e.target.value));
     }
   }
-
+  
   const handlePlayerCount = (e) => {
     setPlayerCount(parseInt(e.target.value));
   }
-
-  const handleNewGame = () => {
-    console.log({
-      terrainKeys: selectedTerrain, 
-      players: playerCount
+  
+  function handlePlayers() {
+    const nameFields = document.forms.terrainSelect.pname;
+    setPlayers(() => {
+      let players = [];
+      nameFields.forEach(field => players.push({player: field.id, name: field.value}));
+      return players;
     });
   }
 
+  const handleNewGame = () => {
+    handlePlayers();
+    
+  }
+  
   return(
     <Paper>
       <Button id='randomFive' onClick={() => handleRandom()}>PICK RANDOM FIVE TERRAIN</Button>
@@ -92,6 +99,30 @@ function Form() {
             <option value="4">4</option>
             <option value="5">5</option>
           </select>
+          <Paper id="playernames">
+            <label htmlFor="playerone">Player 1:</label>
+            <input type="text" id="playerone" name="pname"></input>
+            {playerCount > 1 &&
+              <>
+                <label htmlFor="playertwo">Player 2:</label>
+                <input type="text" id="playertwo" name="pname"></input>
+              </>}
+            {playerCount > 2 && 
+              <>
+                <label htmlFor="playerthree">Player 3:</label>
+                <input type="text" id="playerthree" name="pname"></input>
+              </>}
+            {playerCount > 3 && 
+              <>
+                <label htmlFor="playerfour">Player 4:</label>
+                <input type="text" id="playerfour" name="pname"></input>
+              </>}
+            {playerCount === 5 &&
+              <>
+                <label htmlFor="playerfive">Player 5:</label>
+                <input type="text" id="playerfive" name="pname"></input>
+              </>}
+          </Paper>
         </Fragment>
         <Button id="createGameButton" disabled={buttonDisabled} title="Create Game Button" onClick={handleNewGame}>CREATE GAME</Button>
       </form>
